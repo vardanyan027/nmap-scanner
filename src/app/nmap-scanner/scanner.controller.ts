@@ -23,7 +23,7 @@ export class ScannerController {
         return this.scannerService.paginate({
             page,
             limit,
-            route: 'http://localhost:8888/scans',
+            route: 'http://localhost:8000/scans',
         });
     }
 

@@ -10,11 +10,11 @@ export class NmapScannerService {
 
     @Cron('0,30 * * * *')
     handleCron() {
-        this.scan();
+        this.scan(process.env.RANGE);
     }
 
-    public scan() {
-        let scan = new nmap.OsAndPortScan("192.168.0.1-18");
+    public scan(range: string) {
+        let scan = new nmap.OsAndPortScan(range);
         let startScanTime = new Date();
 
         var openPorts = [];

@@ -23,7 +23,7 @@ export class PortsController {
         return this.portsService.paginate({
             page,
             limit,
-            route: 'http://localhost:8888/ports',
+            route: 'http://localhost:8000/open-ports',
         });
     }
 
