@@ -25,13 +25,14 @@ export class ScannerService {
 
         const totalCount = await this.scannerRepository.count()
         const scans = await this.scannerRepository.findAll(skippedItems, paginationDto.limit);
-
+        var pageCount = Math.ceil(totalCount / paginationDto.limit);
         return {
             totalCount,
             itemCountInPage: scans.length,
             page: paginationDto.page,
+            pageCount: pageCount,
             limit: paginationDto.limit,
-            data: scans
+            data: scans,
         }
     }
 }

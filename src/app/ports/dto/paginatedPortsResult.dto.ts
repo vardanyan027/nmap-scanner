@@ -6,4 +6,5 @@ export class PaginatedPortsResultDto {
     limit: number
     totalCount: number
     itemCountInPage: number
+    pageCount: number
 }

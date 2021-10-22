@@ -6,4 +6,5 @@ export class PaginatedScansResultDto {
     limit: number
     totalCount: number
     itemCountInPage: number
+    pageCount: number
 }

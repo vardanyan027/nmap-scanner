@@ -17,11 +17,13 @@ export class PortsService {
 
         const totalCount = await this.portsRepository.count()
         const ports = await this.portsRepository.findAll(skippedItems, paginationDto.limit);
+        var pageCount = Math.ceil(totalCount / paginationDto.limit);
 
         return {
             totalCount,
             itemCountInPage: ports.length,
             page: paginationDto.page,
+            pageCount: pageCount,
             limit: paginationDto.limit,
             data: ports
         }
