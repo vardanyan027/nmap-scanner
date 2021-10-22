@@ -17,7 +17,7 @@ export class PortsController {
     async findAll(
         @Query() paginationDto: PaginationDto
     ): Promise<PaginatedPortsResultDto> {
-        paginationDto.page = Number(paginationDto.page);
+        paginationDto.page = Number(paginationDto.page) || 1;
         paginationDto.limit = Number(paginationDto.limit) || 10;
 
         return this.portsService.findAll({
