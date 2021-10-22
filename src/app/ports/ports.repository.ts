@@ -15,8 +15,11 @@ export class PortsRepository extends Repository<Ports> {
         await entity.save();
     }
 
-    public async find() {
-        return Ports.find();
+    public findAll(skippedItems: number, limit: number) {
+        return Ports.find({
+            skip: skippedItems,
+            take: limit,
+        });
     }
 
     public async count() {

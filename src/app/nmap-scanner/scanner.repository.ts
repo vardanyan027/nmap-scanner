@@ -1,7 +1,7 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { Scans } from './scanner.entity';
-import {ScanDataDto} from "./dto/ScanDataDto";
-import {Injectable} from "@nestjs/common";
+import { ScanDataDto } from "./dto/ScanDataDto";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 @EntityRepository(Scans)
@@ -17,9 +17,11 @@ export class ScannerRepository extends Repository<Scans> {
         await scan.save();
     }
 
-    public async find() {
+    public findAll(skippedItems: number, limit: number) {
         return Scans.find({
-            order: {"id": "DESC"}
+            order: {id: "DESC"},
+            skip: skippedItems,
+            take: limit,
         });
     }
 

@@ -1,12 +1,8 @@
-import {Body, HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {Body, Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {PortsRepository} from "./ports.repository";
-import {Ports} from "../ports/ports.entity";
-import {
-    paginate,
-    Pagination,
-    IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
+import {PaginationDto} from "../dto/pagination.dto";
+import {PaginatedPortsResultDto} from "./dto/paginatedPortsResult.dto";
 
 @Injectable()
 export class PortsService {
@@ -16,23 +12,30 @@ export class PortsService {
         private portsRepository: PortsRepository
     ) {}
 
-    public async getAll() {
-        return await this.portsRepository.find();
-    }
+    async findAll(paginationDto: PaginationDto): Promise<PaginatedPortsResultDto> {
+        const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
 
-    async paginate(options: IPaginationOptions): Promise<Pagination<Ports>> {
-        return paginate<Ports>(this.portsRepository, options);
+        const totalCount = await this.portsRepository.count()
+        const ports = await this.portsRepository.findAll(skippedItems, paginationDto.limit);
+
+        return {
+            totalCount,
+            itemCountInPage: ports.length,
+            page: paginationDto.page,
+            limit: paginationDto.limit,
+            data: ports
+        }
     }
 
     public async create(@Body() data) {
-        let dataforDelete = await this.portsRepository.find();
+        let deletingData = await this.portsRepository.find();
 
         if (data) {
             data.forEach(el => {
                 this.portsRepository.createPort(el);
             })
         }
-        await this.delete(dataforDelete);
+        await this.delete(deletingData);
 
     }
 

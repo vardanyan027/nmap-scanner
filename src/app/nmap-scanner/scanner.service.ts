@@ -1,14 +1,8 @@
 import { HttpException, HttpStatus, Body, Injectable} from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
-import {ScannerRepository} from "./scanner.repository";
-import {Scans} from "./scanner.entity";
-
-import {
-    paginate,
-    Pagination,
-    IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
-import {Repository} from "typeorm";
+import { ScannerRepository } from "./scanner.repository";
+import { PaginationDto } from "../dto/pagination.dto";
+import { PaginatedScansResultDto } from "./dto/paginatedScansResult.dto";
 
 @Injectable()
 export class ScannerService {
@@ -26,11 +20,18 @@ export class ScannerService {
         }
     }
 
-    public async get() {
-        return await this.scannerRepository.find();
-    }
+    async findAll(paginationDto: PaginationDto): Promise<PaginatedScansResultDto> {
+        const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
 
-    async paginate(options: IPaginationOptions): Promise<Pagination<Scans>> {
-        return paginate<Scans>(this.scannerRepository, options);
+        const totalCount = await this.scannerRepository.count()
+        const scans = await this.scannerRepository.findAll(skippedItems, paginationDto.limit);
+
+        return {
+            totalCount,
+            itemCountInPage: scans.length,
+            page: paginationDto.page,
+            limit: paginationDto.limit,
+            data: scans
+        }
     }
 }

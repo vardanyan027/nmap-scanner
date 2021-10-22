@@ -1,9 +1,8 @@
-import {Controller, DefaultValuePipe, Get, ParseIntPipe, Query} from '@nestjs/common';
+import {Controller, Get, Query} from '@nestjs/common';
 import {PortsService} from "./ports.service";
 import {ApiForbiddenResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
-import {Pagination} from "nestjs-typeorm-paginate";
-import {Scans} from "../nmap-scanner/scanner.entity";
-import {Ports} from "./ports.entity";
+import {PaginationDto} from "../dto/pagination.dto";
+import {PaginatedPortsResultDto} from "./dto/paginatedPortsResult.dto";
 
 @ApiTags('open-ports')
 @Controller('open-ports')
@@ -15,20 +14,16 @@ export class PortsController {
     @Get('/')
     @ApiOkResponse({ description: 'The resource list has been successfully returned' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async index(
-        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-        @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-    ): Promise<Pagination<Ports>> {
-        limit = limit > 100 ? 100 : limit;
-        return this.portsService.paginate({
-            page,
-            limit,
-            route: 'http://localhost:8000/open-ports',
-        });
-    }
+    async findAll(
+        @Query() paginationDto: PaginationDto
+    ): Promise<PaginatedPortsResultDto> {
+        paginationDto.page = Number(paginationDto.page);
+        paginationDto.limit = Number(paginationDto.limit) || 10;
 
-    createPort(data) {
-        this.portsService.create(data);
+        return this.portsService.findAll({
+            ...paginationDto,
+            limit: paginationDto.limit > 10 ? 10 : paginationDto.limit
+        })
     }
     
 }
