@@ -16,7 +16,7 @@ export class ScannerController {
     @ApiOkResponse({ description: 'The resource list has been successfully returned' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedScansResultDto> {
-        paginationDto.page = Number(paginationDto.page);
+        paginationDto.page = Number(paginationDto.page) || 1;
         paginationDto.limit = Number(paginationDto.limit) || 10;
 
         return this.scannerService.findAll({
