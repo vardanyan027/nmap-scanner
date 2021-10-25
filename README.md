@@ -29,7 +29,14 @@
 ## Installation
 
 ```bash
-$ sudo apt install nmap
+# Install nmap
+$ sudo apt install nmap 
+# Install libcap
+$ sudo apt-get install libcap2-bin
+# Set Nmap capabilities
+$ sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip $(which nmap)
+$ getcap $(which nmap)
+# Install npm package
 $ npm install
 ```
 

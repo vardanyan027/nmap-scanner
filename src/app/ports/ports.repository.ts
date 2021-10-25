@@ -21,7 +21,9 @@ export class PortsRepository extends Repository<Ports> {
             take: limit,
         });
     }
-
+    public find() {
+        return Ports.find();
+    }
     public async count() {
         return Ports.count();
     }
