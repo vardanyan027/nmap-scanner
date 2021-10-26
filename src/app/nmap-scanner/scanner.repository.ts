@@ -8,9 +8,9 @@ import { Injectable } from "@nestjs/common";
 export class ScannerRepository extends Repository<Scans> {
 
     public async createScans(dataScan: ScanDataDto) {
-        const { data, period, status, created_at } = dataScan;
+        const { range, period, status, created_at } = dataScan;
         const scan = new Scans();
-        scan.data = JSON.stringify(data);
+        scan.range = range;
         scan.period = period;
         scan.status = status;
         scan.created_at = created_at;
@@ -27,5 +27,19 @@ export class ScannerRepository extends Repository<Scans> {
 
     public async count() {
         return Scans.count();
+    }
+
+    public async find() {
+        return Scans.find({
+            order: { id: "DESC"},
+            take: 1
+        })
+    }
+
+
+    public async findAndUpdatePeriod(period) {
+        let scans = this.find();
+        scans[0].period = period;
+        await scans[0].save();
     }
 }

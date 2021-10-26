@@ -17,9 +17,22 @@ export class NmapScannerService {
         let scan = new nmap.OsAndPortScan(range);
         let startScanTime = new Date();
 
-        var openPorts = [];
+        let openPorts = [];
+
+        let scanData = {
+            range: range,
+            period: 0,
+            status: 'processing',
+            created_at: new Date()
+        }
+
+        this.scannerService.parse(scanData);
 
         scan.on('complete', (data) => {
+
+            this.scannerService.changeStatus("completed");
+            this.scannerService.changePeriod(scan.scanTime);
+
             data.forEach((el) => {
                 if(el["openPorts"]) {
                     openPorts = openPorts.concat(el["openPorts"]);
@@ -27,18 +40,12 @@ export class NmapScannerService {
             });
             this.portService.create(openPorts);
 
-            let scanData = {
-                data: JSON.stringify(data),
-                period: scan.scanTime,
-                status: 'complete',
-                created_at: new Date()
-            }
-
-            this.scannerService.parse(scanData);
-
         });
 
         scan.on('error', (error) => {
+
+            this.scannerService.changeStatus("failed");
+            this.scannerService.changePeriod(scan.scanTime);
 
             let scanData = {
                 data: JSON.stringify(error),

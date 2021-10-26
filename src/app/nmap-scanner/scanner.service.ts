@@ -35,4 +35,17 @@ export class ScannerService {
             data: scans,
         }
     }
+
+    public async changeStatus(status: string) {
+        let scans = await this.scannerRepository.find();
+        scans[0].status = status;
+        await scans[0].save();
+    }
+
+    public async changePeriod(period: number) {
+        let scans = await this.scannerRepository.find();
+        scans[0].period = period;
+        await scans[0].save();
+    }
+
 }

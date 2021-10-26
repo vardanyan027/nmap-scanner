@@ -1,5 +1,5 @@
 export class ScanDataDto {
-    data: string
+    range: string
     created_at: Date;
     period: number;
     status: string;
