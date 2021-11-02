@@ -6,13 +6,14 @@ import {Ports} from "./ports.entity";
 @EntityRepository(Ports)
 export class PortsRepository extends Repository<Ports> {
     public async createPort (data) {
-        const {port, protocol, service, method} = data
-        let entity = new Ports();
-        entity.port = port;
-        entity.protocol = protocol;
-        entity.service = service;
-        entity.method = method;
-        await entity.save();
+        const {port, protocol, service, method} = data.openPorts[0]
+        let ports = new Ports();
+        ports.port = port;
+        ports.protocol = protocol;
+        ports.service = service;
+        ports.method = method;
+        await ports.save();
+        return ports;
     }
 
     public findAll(skippedItems: number, limit: number) {
@@ -28,9 +29,4 @@ export class PortsRepository extends Repository<Ports> {
         return Ports.count();
     }
 
-    public async deletePorts (data) {
-        data.forEach(el => {
-            Ports.remove(el);
-        })
-    }
 }

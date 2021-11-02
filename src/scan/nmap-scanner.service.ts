@@ -1,21 +1,24 @@
 import {Injectable} from '@nestjs/common';
 import * as nmap from "../../vendor/node-nmap";
-import { ScannerService } from "../app/nmap-scanner/scanner.service";
+import { ScanHistoryService } from "../app/scanHistory/scanHistory.service";
 import { PortsService } from "../app/ports/ports.service";
-import {Cron, CronExpression} from "@nestjs/schedule";
+import {Cron} from "@nestjs/schedule";
+import {IpAddressesService} from "../app/ip-addresses/ip-addresses.service";
 
 @Injectable()
 export class NmapScannerService {
-    constructor(private scannerService: ScannerService, private portService: PortsService) {}
+    constructor(private scannerService: ScanHistoryService,
+                private portService: PortsService,
+                private ipAddressesService: IpAddressesService
+    ) {}
 
-    @Cron('0,30 * * * *')
+    @Cron('18,50 * * * *')
     handleCron() {
         this.scan(process.env.RANGE);
     }
 
     public scan(range: string) {
         let scan = new nmap.OsAndPortScan(range);
-        let startScanTime = new Date();
 
         let openPorts = [];
 
@@ -28,37 +31,28 @@ export class NmapScannerService {
 
         this.scannerService.parse(scanData);
 
-        scan.on('complete', (data) => {
-
-            this.scannerService.changeStatus("completed");
-            this.scannerService.changePeriod(scan.scanTime);
-
+        scan.on('complete', async (data) => {
+            await this.scannerService.changeStatusAndPeriod("completed", scan.scanTime);
+            await this.ipAddressesService.create(data);
             data.forEach((el) => {
-                if(el["openPorts"]) {
-                    openPorts = openPorts.concat(el["openPorts"]);
+                if (el["openPorts"]) {
+                    openPorts.push({
+                        ip: el["ip"],
+                        openPorts: el["openPorts"]
+                    })
                 }
             });
-            this.portService.create(openPorts);
+            await this.portService.create(openPorts);
 
         });
 
         scan.on('error', (error) => {
 
-            this.scannerService.changeStatus("failed");
-            this.scannerService.changePeriod(scan.scanTime);
-
-            let scanData = {
-                data: JSON.stringify(error),
-                period: scan.scanTime,
-                status: 'failed',
-                created_at: startScanTime
-            }
-
-            this.scannerService.parse(scanData);
+            this.scannerService.changeStatusAndPeriod("failed", scan.scanTime);
 
         });
 
         scan.startScan();
-
     }
+
 }

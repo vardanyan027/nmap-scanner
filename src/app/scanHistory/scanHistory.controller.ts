@@ -1,14 +1,14 @@
-import {Controller, Get, Query} from '@nestjs/common';
-import { ScannerService } from "./scanner.service";
+import {Controller, Get, Param, Query} from '@nestjs/common';
+import { ScanHistoryService } from "./scanHistory.service";
 import {ApiForbiddenResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {PaginationDto} from "../dto/pagination.dto";
 import {PaginatedScansResultDto} from "./dto/paginatedScansResult.dto";
 
 @ApiTags('scans')
 @Controller('scans')
-export class ScannerController {
+export class ScanHistoryController {
 
-    constructor(private scannerService: ScannerService,
+    constructor(private scannerService: ScanHistoryService,
                 ) {
     }
 
@@ -23,6 +23,11 @@ export class ScannerController {
             ...paginationDto,
             limit: paginationDto.limit > 10 ? 10 : paginationDto.limit
         })
+    }
+
+    @Get('/:id')
+    findById(@Param() param) {
+        return this.scannerService.findById(param.id);
     }
 
 }

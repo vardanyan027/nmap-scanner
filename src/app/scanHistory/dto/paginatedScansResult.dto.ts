@@ -1,7 +1,7 @@
-import { Scans } from "../scanner.entity";
+import { ScanHistory } from "../scanHistory.entity";
 
 export class PaginatedScansResultDto {
-    data: Scans[]
+    data: ScanHistory[]
     page: number
     limit: number
     totalCount: number

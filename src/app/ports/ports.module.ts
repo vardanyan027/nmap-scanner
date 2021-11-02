@@ -1,14 +1,18 @@
-import { Module } from '@nestjs/common';
+import {Ip, Module} from '@nestjs/common';
 import { PortsService } from './ports.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {PortsRepository} from "./ports.repository";
 import {Ports} from "./ports.entity";
-import {ScannerService} from "../nmap-scanner/scanner.service";
-import {ScannerRepository} from "../nmap-scanner/scanner.repository";
+import {ScanHistoryService} from "../scanHistory/scanHistory.service";
+// import {ScannerRepository} from "../scanHistory/scanner.repository";
+import {IpAddressesRepository} from "../ip-addresses/ip-addresses.repository";
+import {Repository} from "typeorm";
+import {ScanHistoryRepository} from "../scanHistory/scanHistory.repository";
+import {ScansService} from "../scans/scans.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Ports]), PortsRepository],
-  providers: [PortsService, PortsRepository, ScannerRepository, ScannerService],
-  exports: [PortsService, PortsRepository, ScannerService, ScannerRepository]
+  providers: [PortsService, PortsRepository, ScanHistoryService, ScanHistoryRepository,IpAddressesRepository, Repository, ScansService],
+  exports: [PortsService, PortsRepository, ScanHistoryService, ScanHistoryRepository,IpAddressesRepository, Repository, ScansService]
 })
 export class PortsModule {}
