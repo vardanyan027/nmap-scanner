@@ -12,7 +12,7 @@ export class NmapScannerService {
                 private ipAddressesService: IpAddressesService
     ) {}
 
-    @Cron('27,50 * * * *')
+    @Cron('0,58 * * * *')
     handleCron() {
         this.scan(process.env.RANGE);
     }
