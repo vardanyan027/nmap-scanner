@@ -4,6 +4,7 @@ import { ScanHistory } from "./scanHistory.entity";
 import {PaginationDto} from "../dto/pagination.dto";
 import {PaginatedScansResultDto} from "./dto/paginatedScansResult.dto";
 import {Scans} from "../scans/scans.entity";
+import {IpAddresses} from "../ip-addresses/ip-addresses.entity";
 
 @Injectable()
 export class ScanHistoryService {
@@ -70,13 +71,24 @@ export class ScanHistoryService {
     }
 
     async findById(id) {
+        const history = await getRepository(ScanHistory)
+            .createQueryBuilder("history")
+            .where("history.id = :id", {id: id})
+            .execute();
         const scan = await getRepository(Scans)
             .createQueryBuilder( "scan")
+            .select("scan.ipsId")
+            .where("scan.scansId = :scansId", {
+                scansId: id
+            })
+            .execute();
+        const ips = await getRepository(IpAddresses)
+            .createQueryBuilder("ips")
             .select()
-            .where("scan.scansId = :id", {
-                id: id
+            .where("ips.id = :ipsId", {
+                ipsId: scan[0].ipsId
             })
             .getMany();
-        return scan;
+        return ips;
     }
 }

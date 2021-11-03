@@ -273,7 +273,6 @@ class QueuedScan extends EventEmitter {
                     data[0].scanTime = this.currentScan.scanTime;
                     this.scanResults = this.scanResults.concat(data);
                 } else if (this.saveNotFoundToResults) {
-                    console.log(data)
                     data[0] = {
                         error: "Host not found",
                         scanTime: this.currentScan.scanTime

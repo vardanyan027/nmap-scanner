@@ -16,7 +16,6 @@ export class IpAddressesService {
         if (data.length !== 0) {
             for (const el of data) {
                 let ips = await this.find(el);
-                console.log(ips);
                 let scan_ips = new Scans();
                 scan_ips.scans = scan;
                 scan_ips.ips = ips;
@@ -35,7 +34,6 @@ export class IpAddressesService {
             .getOne();
         if (!ips) {
             ips = await this.createIp(data);
-            console.log(ips);
         }
         return ips;
     }

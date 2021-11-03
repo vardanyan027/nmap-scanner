@@ -26,8 +26,8 @@ export class ScanHistoryController {
     }
 
     @Get('/:id')
-    findById(@Param() param) {
-        return this.scannerService.findById(param.id);
+    async findById(@Param() param) {
+        return await this.scannerService.findById(param.id);
     }
 
 }
