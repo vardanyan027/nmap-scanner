@@ -1,10 +1,9 @@
-import {Ip, Module} from '@nestjs/common';
-import { PortsService } from './ports.service';
+import {Module} from '@nestjs/common';
+import {PortsService } from './ports.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {PortsRepository} from "./ports.repository";
 import {Ports} from "./ports.entity";
 import {ScanHistoryService} from "../scanHistory/scanHistory.service";
-// import {ScannerRepository} from "../scanHistory/scanner.repository";
 import {IpAddressesRepository} from "../ip-addresses/ip-addresses.repository";
 import {Repository} from "typeorm";
 import {ScanHistoryRepository} from "../scanHistory/scanHistory.repository";

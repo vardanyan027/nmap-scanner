@@ -1,9 +1,8 @@
 import {Injectable} from '@nestjs/common';
-import {getRepository, Repository} from "typeorm";
+import {getRepository} from "typeorm";
 import {IpAddresses} from "../ip-addresses/ip-addresses.entity";
 import {Scans} from "./scans.entity";
 import {ScanHistoryService} from "../scanHistory/scanHistory.service";
-import {PortsRepository} from "../ports/ports.repository";
 
 @Injectable()
 export class ScansService {

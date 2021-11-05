@@ -1,15 +1,14 @@
 import {Injectable} from '@nestjs/common';
-import {getManager, getRepository, Repository} from "typeorm";
+import {getManager, getRepository} from "typeorm";
 import {IpAddresses} from "./ip-addresses.entity";
 import {ScanHistoryService} from "../scanHistory/scanHistory.service";
 import {Scans} from "../scans/scans.entity";
+import {randomUUID} from "crypto";
 
 @Injectable()
 export class IpAddressesService {
 
-    constructor(
-                private scannerService: ScanHistoryService
-    ) {}
+    constructor(private scannerService: ScanHistoryService) {}
 
     async create(data) {
         const scan = await this.scannerService.find();
@@ -33,13 +32,14 @@ export class IpAddressesService {
             )
             .getOne();
         if (!ips) {
-            ips = await this.createIp(data);
+            data.uuid = randomUUID();
+            ips = await this.createAndFind(data);
         }
         return ips;
     }
 
-    async createIp(data) {
-        const ips = await getRepository(IpAddresses)
+    async createAndFind(data) {
+        await getRepository(IpAddresses)
             .createQueryBuilder()
             .insert()
             .values({
@@ -47,9 +47,16 @@ export class IpAddressesService {
                 ip: data.ip,
                 mac: data.mac,
                 osNmap: data.osNmap,
-                vendor: data.vendor
+                vendor: data.vendor,
+                uuid: data.uuid
             })
-            .execute()
-        return ips[0];
+            .execute();
+        let ips = await getManager()
+            .createQueryBuilder(IpAddresses, "ipAddresses")
+            .where("ipAddresses.ip = :ip",
+                {ip: data.ip}
+            )
+            .getOne();
+        return ips;
     }
 }

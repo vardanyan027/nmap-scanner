@@ -1,6 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, ManyToMany, JoinTable, OneToMany} from 'typeorm';
-import {IpAddresses} from "../ip-addresses/ip-addresses.entity";
-import {Scans} from "../scans/scans.entity";
+import {Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany} from 'typeorm';
 import {ScanHasPorts} from "../scanPorts/scanHasPorts.entity";
 
 @Entity()

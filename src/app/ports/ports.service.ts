@@ -1,13 +1,7 @@
 import {Body, Injectable} from '@nestjs/common';
-import {InjectRepository} from "@nestjs/typeorm";
-import {PortsRepository} from "./ports.repository";
 import {PaginationDto} from "../dto/pagination.dto";
 import {PaginatedPortsResultDto} from "./dto/paginatedPortsResult.dto";
-import {IpAddressesRepository} from "../ip-addresses/ip-addresses.repository";
-import {getManager, getRepository, Repository} from "typeorm";
-import {IpAddresses} from "../ip-addresses/ip-addresses.entity";
-import {ScanHistoryService} from "../scanHistory/scanHistory.service";
-import {Scans} from "../scans/scans.entity";
+import {getManager, getRepository} from "typeorm";
 import {ScanHasPorts} from "../scanPorts/scanHasPorts.entity";
 import {Ports} from "./ports.entity";
 import {ScansService} from "../scans/scans.service";
@@ -45,7 +39,7 @@ export class PortsService {
         if (data.length !== 0) {
             for (const el of data) {
                 for (const openPorts of el.openPorts) {
-                    let port = await this.findOrCreatePort(openPorts);
+                    let port = await this.findPort(openPorts);
                     let scans = await this.scansService.getScan(el.ip);
                     await this.createScanPorts(scans, port);
                 }
@@ -53,7 +47,7 @@ export class PortsService {
         }
 
     }
-    async findOrCreatePort (openPorts) {
+    async findPort (openPorts) {
         let port = await getManager()
             .createQueryBuilder(Ports, "ports")
             .where("ports.port = :port",
@@ -67,7 +61,7 @@ export class PortsService {
     }
 
     async createPort(openPorts) {
-        const port = await getRepository(Ports)
+        await getRepository(Ports)
             .createQueryBuilder()
             .insert()
             .values({
@@ -77,7 +71,13 @@ export class PortsService {
                 method: openPorts.method
             })
             .execute();
-        return port[0];
+        let port = await getManager()
+            .createQueryBuilder(Ports, "ports")
+            .where("ports.port = :port",
+                {port: openPorts.port}
+            )
+            .getOne();
+        return port;
     }
 
     public async createScanPorts(scan, port) {

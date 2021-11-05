@@ -7,6 +7,11 @@ export class ScanHistory extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({
+        unique: true
+    })
+    uuid: string;
+
     @Column()
     range: string;
 

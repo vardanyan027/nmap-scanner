@@ -8,6 +8,11 @@ export class IpAddresses extends BaseEntity {
     id: number;
 
     @Column({
+        unique: true
+    })
+    uuid: string;
+
+    @Column({
         nullable: true
     })
     hostname: string
@@ -29,6 +34,8 @@ export class IpAddresses extends BaseEntity {
         nullable: true
     })
     vendor: string
+
+
 
     @OneToMany(() => Scans, scans => scans.ips)
     scans: Scans[]

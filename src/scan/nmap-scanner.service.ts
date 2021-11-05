@@ -12,7 +12,7 @@ export class NmapScannerService {
                 private ipAddressesService: IpAddressesService
     ) {}
 
-    @Cron('0,58 * * * *')
+    @Cron('0,29 * * * *')
     handleCron() {
         this.scan(process.env.RANGE);
     }
@@ -32,7 +32,6 @@ export class NmapScannerService {
         this.scannerService.parse(scanData);
 
         scan.on('complete', async (data) => {
-            console.log(data);
 
             await this.scannerService.changeStatusAndPeriod("completed", scan.scanTime);
             await this.ipAddressesService.create(data);

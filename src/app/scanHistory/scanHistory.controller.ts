@@ -8,9 +8,7 @@ import {PaginatedScansResultDto} from "./dto/paginatedScansResult.dto";
 @Controller('scans')
 export class ScanHistoryController {
 
-    constructor(private scannerService: ScanHistoryService,
-                ) {
-    }
+    constructor(private scannerService: ScanHistoryService) {}
 
     @Get('/')
     @ApiOkResponse({ description: 'The resource list has been successfully returned' })
@@ -25,9 +23,14 @@ export class ScanHistoryController {
         })
     }
 
-    @Get('/:id')
-    async findById(@Param() param) {
-        return await this.scannerService.findById(param.id);
+    @Get('/:uuid')
+    async findByUuid(@Param() param) {
+        return await this.scannerService.findByUuid(param.uuid);
+    }
+
+    @Get('/:scanUuid/ips/:ipUuid')
+    async findPorts4Scans(@Param() param){
+        return await this.scannerService.findPorts4Scans(param)
     }
 
 }
