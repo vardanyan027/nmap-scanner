@@ -22,7 +22,7 @@ export class ScanHistoryService {
             .values({
                 range: data.range,
                 status: data.status,
-                period: data.period,
+                period: data.period.toString(),
                 uuid: randomUUID(),
                 created_at: data.created_at
             })
@@ -38,7 +38,7 @@ export class ScanHistoryService {
             .limit(1)
             .getOne();
         scan.status = status;
-        scan.period = period;
+        scan.period = period.toString();
         await scan.save()
     }
 
@@ -55,6 +55,9 @@ export class ScanHistoryService {
             .skip(skippedItems)
             .take(paginationDto.limit)
             .getMany();
+        for (const scan of scans) {
+            scan.period = this.convertMS(scan.period)
+        }
         let pageCount = Math.ceil(totalCount / paginationDto.limit);
         return {
             totalCount,
@@ -152,4 +155,13 @@ export class ScanHistoryService {
         return portData;
     }
 
+    public  convertMS(ms) {
+        let min, sec;
+        sec = Math.floor(ms / 1000);
+        min = Math.floor(sec / 60);
+        sec = sec % 60;
+        min = min % 60;
+        ms = ms % 1000;
+        return min + ' min ' + sec + ' sec ' + ms + ' ms';
+    }
 }

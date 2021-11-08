@@ -12,7 +12,7 @@ export class NmapScannerService {
                 private ipAddressesService: IpAddressesService
     ) {}
 
-    @Cron('0,29 * * * *')
+    @Cron('7,40 * * * *')
     handleCron() {
         this.scan(process.env.RANGE);
     }
@@ -44,7 +44,6 @@ export class NmapScannerService {
                 }
             });
             await this.portService.create(openPorts);
-
         });
 
         scan.on('error', (error) => {

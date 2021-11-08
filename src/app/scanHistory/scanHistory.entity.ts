@@ -19,7 +19,7 @@ export class ScanHistory extends BaseEntity{
     status: string;
 
     @Column()
-    period: number;
+    period: string;
 
     @Column()
     created_at: Date;
