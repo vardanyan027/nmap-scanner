@@ -45,7 +45,7 @@ and dozens of other characteristics.
   npm run start:prod
 ```
 
-## Test
+## Testing the app
 
 #### To test the app run the commands mentioned below
 
