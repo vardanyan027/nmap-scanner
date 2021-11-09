@@ -56,7 +56,9 @@ export class ScanHistoryService {
             .take(paginationDto.limit)
             .getMany();
         for (const scan of scans) {
-            scan.period = this.convertMS(scan.period)
+            scan.period = this.convertMS(scan.period);
+            // @ts-ignore
+            scan.created_at = scan.created_at.toString()
         }
         let pageCount = Math.ceil(totalCount / paginationDto.limit);
         return {
