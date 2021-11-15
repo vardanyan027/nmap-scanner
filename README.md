@@ -26,7 +26,8 @@ and dozens of other characteristics.
 # Install npm package
   npm install
 ```
-
+4. Make a copy of the `env.sample` file in the root folder, remove `.sample` extension from the file: `.env.sample -> .env`
+3. Set values for all environment variables in `.env` depending on your system and configurations.
 ## Running the app
 
 #### To run the app run the commands mentioned below
